@@ -1,0 +1,6 @@
+name: MinecraftPublicChestPlugin
+version: '${version}'
+main: com.yj0524.Main
+api-version: 1.16
+commands:
+  publicchest:
