@@ -13,6 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class Main extends JavaPlugin implements Listener {
 
     private Inventory publicChest;
@@ -22,9 +24,13 @@ public class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         // Register events
         getServer().getPluginManager().registerEvents(this, this);
-        // Initialize public chest
+        // Load chest size from config
         loadConfig();
-        publicChest = Bukkit.createInventory(null, chestSize, "Public Chest");
+        File cfile = new File(getDataFolder(), "config.yml");
+        if (cfile.length() == 0) {
+            getConfig().options().copyDefaults(true);
+            saveConfig();
+        }
         getLogger().info("Plugin Enabled.");
     }
 
@@ -73,6 +79,15 @@ public class Main extends JavaPlugin implements Listener {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (cmd.getName().equalsIgnoreCase("publicchest")) {
+                if (publicChest == null) {
+                    publicChest = Bukkit.createInventory(null, chestSize, "Public Chest");
+                    for (int i = 0; i < chestSize; i++) {
+                        ItemStack item = getConfig().getItemStack("publicChest." + i);
+                        if (item != null) {
+                            publicChest.setItem(i, item);
+                        }
+                    }
+                }
                 player.openInventory(publicChest);
                 return true;
             }
