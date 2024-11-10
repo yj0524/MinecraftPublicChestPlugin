@@ -91,6 +91,18 @@ public class Main extends JavaPlugin implements Listener {
                 player.openInventory(publicChest);
                 return true;
             }
+
+            if (cmd.getName().equalsIgnoreCase("reloadconfig")) {
+                if (!player.isOp()) {
+                    player.sendMessage("You do not have permission to use this command.");
+                    return true;
+                }
+
+                reloadConfig();
+                loadConfig();
+                player.sendMessage("Config reloaded.");
+                return true;
+            }
         }
         return false;
     }
